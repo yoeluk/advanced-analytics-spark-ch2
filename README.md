@@ -1,5 +1,5 @@
 
-## SBT TEMPLATE PROJECT WITH SPARK ##
+## ADVANCED ANALYTICS WITH SPARK ##
 
 
 ### Running it ###

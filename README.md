@@ -1,8 +1,8 @@
 
-** SBT TEMPLATE PROJECT WITH SPARK **
+## SBT TEMPLATE PROJECT WITH SPARK ##
 
 
-*** Running it ***
+### Running it ###
 
 This trivial sample Spark app is taken from `Spark In Action` book
 
@@ -15,6 +15,6 @@ $ wget http://data.githubarchive.org/2015-03-01-{0..23}.json.gz
 $ gunzip *
 ```
 
-*** Disclaimer ***
+### Disclaimer ###
 
 The code in the book do not run as written and considerable debugging when parsing the data has lead this code. However the spark jobs do yield the exact same numbers so it likely that the data was cureated when this examples were written.

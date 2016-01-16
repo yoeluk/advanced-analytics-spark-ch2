@@ -1,5 +1,6 @@
 package com.briefscala
 
+import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkContext, SparkConf}
 import scala.util.{Success, Failure, Try}
 import scalaz._, Scalaz._
@@ -13,20 +14,19 @@ object Main {
       .setMaster("local[*]")
     val sc = new SparkContext(conf)
     val rawblocks = sc.textFile("/Users/yoel.garciadiaz/linkage/")
-    val head = rawblocks.take(10)
     val noheader = rawblocks.filter(!isHeader(_))
-    val mds = head.filter(!isHeader(_)).flatMap(parse)
     val parsed = noheader.flatMap(parse).cache()
-    val grouped = mds.groupBy(md => md.matched)
-    val matchCounts = parsed.map(_.matched).countByValue()
-    val matchCountsSeq = matchCounts.toSeq
-    val nasRDD = parsed.map(md => {
+    val nasRDD = parsed.map( md => {
       md.scores.map(d => NAStatCounter(d))
     })
-    val reduced = nasRDD.reduce((n1, n2) => {
-      n1.zip(n2).map { case (a, b) => a.merge(b) }
-    })
-    reduced.foreach(println)
+//    val reduced = nasRDD.reduce((n1, n2) => {
+//      n1.zip(n2).map { case (a, b) => a.merge(b) }
+//    })
+    val statsm = statsWithMissing(parsed.filter(_.matched).map(_.scores))
+    val statsn = statsWithMissing(parsed.filter(!_.matched).map(_.scores))
+    statsm.zip(statsn).map { case (m, n) =>
+      (m.missing + n.missing, m.stats.mean - n.stats.mean)
+    }.foreach(println)
   }
 
   def isHeader(line: String): Boolean = line.contains("id_1")
@@ -37,6 +37,12 @@ object Main {
       case Success(d) => d
     }
 
+  /**
+    * this code has being modified.
+    * the data contains plenty instances of bad data
+    * @param line
+    * @return
+    */
   def parse(line: String) = {
     val pieces = line.split(',')
     for {
@@ -48,5 +54,27 @@ object Main {
       val scores = pieces.slice(2, 10).map(toDouble)
       MatchData(id1, id2, scores, matched)
     }
+  }
+
+  /**
+    * this method has been modified. The code in the book throws a runtime error
+    * when it called `.next` on an empty iterator
+    * @param rdd
+    * @return
+    */
+  def statsWithMissing(rdd: RDD[Array[Double]]): Array[NAStatCounter] = {
+    val nastats = rdd.mapPartitions {
+      case iter if iter.hasNext =>
+        val nas = iter.next.map(d => NAStatCounter(d))
+        iter.foreach( arr => {
+          nas.zip(arr).foreach { case (n, d) => n.add(d) }
+        })
+        Iterator(nas)
+      case _ =>
+        Iterator()
+    }
+    nastats.reduce((n1, n2) => {
+      n1.zip(n2).map { case (a, b) => a.merge(b) }
+    })
   }
 }

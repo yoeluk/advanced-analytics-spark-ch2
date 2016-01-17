@@ -4,15 +4,15 @@
 
 ### Before Running it ###
 
-This trivial sample Spark app is taken from `Spark In Action` book
+This sample Spark app is taken from `Spark In Action` book
 
 Download the data:
 
 ```
-$ mkdir -p $HOME/sia/github-archive
-$ cd $HOME/sia/github-archive
-$ wget http://data.githubarchive.org/2015-03-01-{0..23}.json.gz
-$ gunzip *
+$ mkdir -p $HOME/linkage
+$ curl -o donation.zip https://archive.ics.uci.edu/ml/machine-learning-databases/00210/donation.zip
+$ unzip donation.zip
+$ unzip 'block_*.zip'
 ```
 
 ### Running it ###
@@ -22,7 +22,7 @@ $ sbt clean assembly
 $ ~/bin/Spark/bin/spark-submit --class com.briefscala.Main --master spark://127.0.0.1:7077 ./target/scala-2.11/advanced-spark-ch2-assembly-0.1.0-SNAPSHOT.jar
 ```
 
-It should out the stats for each of the features
+It should output the stats for each of the features
 
 ```
 ((1007,0.2854529057466859),0)                                                   

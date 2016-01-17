@@ -10,8 +10,8 @@ case class MatchData(id1: Double, id2: Double, scores: Array[Double], matched: B
 object Main {
   def main(args: Array[String]) {
     val conf = new SparkConf()
-      .setAppName("Advanced-Analytics-1")
-      .setMaster("local[*]")
+      .setAppName("Advanced-Analytics-ch2")
+      //.setMaster("local[*]")
     val sc = new SparkContext(conf)
     val rawblocks = sc.textFile("/Users/yoel.garciadiaz/linkage/")
     val noheader = rawblocks.filter(!isHeader(_))
@@ -19,9 +19,6 @@ object Main {
     val nasRDD = parsed.map( md => {
       md.scores.map(d => NAStatCounter(d))
     })
-//    val reduced = nasRDD.reduce((n1, n2) => {
-//      n1.zip(n2).map { case (a, b) => a.merge(b) }
-//    })
     val statsm = statsWithMissing(parsed.filter(_.matched).map(_.scores))
     val statsn = statsWithMissing(parsed.filter(!_.matched).map(_.scores))
     statsm.zip(statsn).zipWithIndex.map { case ((m, n), i) =>
@@ -40,13 +37,14 @@ object Main {
   /**
     * this code has being modified.
     * the data contains plenty instances of bad data
+    *
     * @param line
     * @return
     */
   def parse(line: String) = {
     val pieces = line.split(',')
     for {
-      _ <- (pieces.length > 11).option(true)
+      _ <- (pieces.length > 10).option(true)
       matched <- Try(pieces(11).toBoolean).toOption
     } yield {
       val id1 = pieces(0).toInt
@@ -60,6 +58,7 @@ object Main {
     * this method has been modified. The code in the book throws a runtime error
     * when it called `.next` on an empty iterator
     * !! Missing feature 8 probably due to parsing error within the provided raw data !!
+    *
     * @param rdd
     * @return
     */
@@ -67,15 +66,15 @@ object Main {
     val nastats = rdd.mapPartitions {
       case iter if iter.hasNext =>
         val nas = iter.next.map(d => NAStatCounter(d))
-        iter.foreach( arr => {
+        iter.foreach( arr =>
           nas.zip(arr).foreach { case (n, d) => n.add(d) }
-        })
+        )
         Iterator(nas)
       case _ =>
         Iterator()
     }
-    nastats.reduce((n1, n2) => {
+    nastats.reduce { (n1, n2) =>
       n1.zip(n2).map { case (a, b) => a.merge(b) }
-    })
+    }
   }
 }

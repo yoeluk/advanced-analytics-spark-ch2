@@ -1,4 +1,4 @@
-name := "advanced-spark-1"
+name := "advanced-spark-ch2"
 
 version := "0.1.0-SNAPSHOT"
 
@@ -30,11 +30,7 @@ val sparkDependencyScope = "provided"
 
 libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core"  % "7.1.1",
-  "com.datastax.spark" %% "spark-cassandra-connector" % "1.5.0-RC1",
   "org.apache.spark" %% "spark-core" % sparkVersion % sparkDependencyScope,
-  "org.apache.spark" %% "spark-sql" % sparkVersion % sparkDependencyScope,
-  "org.apache.spark" %% "spark-mllib" % sparkVersion % sparkDependencyScope,
-  "org.apache.spark" %% "spark-streaming" % sparkVersion % sparkDependencyScope,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "org.scalactic" %% "scalactic" % "2.2.6",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
@@ -42,3 +38,7 @@ libraryDependencies ++= Seq(
 )
 
 addCompilerPlugin("org.psywerx.hairyfotr" %% "linter" % "0.1.12")
+
+test in assembly := {}
+
+mainClass in assembly := Some("com.briefscala.Main")

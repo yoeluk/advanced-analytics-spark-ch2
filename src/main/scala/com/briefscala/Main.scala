@@ -24,8 +24,8 @@ object Main {
 //    })
     val statsm = statsWithMissing(parsed.filter(_.matched).map(_.scores))
     val statsn = statsWithMissing(parsed.filter(!_.matched).map(_.scores))
-    statsm.zip(statsn).map { case (m, n) =>
-      (m.missing + n.missing, m.stats.mean - n.stats.mean)
+    statsm.zip(statsn).zipWithIndex.map { case ((m, n), i) =>
+      ((m.missing + n.missing, m.stats.mean - n.stats.mean), i)
     }.foreach(println)
   }
 
@@ -59,6 +59,7 @@ object Main {
   /**
     * this method has been modified. The code in the book throws a runtime error
     * when it called `.next` on an empty iterator
+    * !! Missing feature 8 probably due to parsing error within the provided raw data !!
     * @param rdd
     * @return
     */

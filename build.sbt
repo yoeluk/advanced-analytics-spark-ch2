@@ -29,7 +29,7 @@ val sparkVersion = "1.6.0"
 val sparkDependencyScope = "provided"
 
 libraryDependencies ++= Seq(
-  "org.scalaz" %% "scalaz-core"  % "7.1.1",
+  "org.scalaz" %% "scalaz-core"  % "7.2.0",
   "org.apache.spark" %% "spark-core" % sparkVersion % sparkDependencyScope,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "org.scalactic" %% "scalactic" % "2.2.6",

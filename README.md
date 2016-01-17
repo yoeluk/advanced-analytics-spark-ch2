@@ -37,5 +37,5 @@ It should output the stats for each of the features
 
 ### Disclaimer ###
 
-The code in the book do not run as written and considerable debugging when parsing the data has lead this code. However the spark jobs do yield the exact same numbers so it likely that the data was curated when this examples were written.
+The code in this chapter do not run as written and considerable debugging when parsing the data has lead this code. However, the spark jobs do yield the exact same result so it likely that the data was curated when this book code was written.
 

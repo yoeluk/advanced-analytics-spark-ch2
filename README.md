@@ -1,6 +1,8 @@
 
 ### ADVANCED ANALYTICS WITH SPARK CH2 ###
 
+[![Join the chat at https://gitter.im/yoeluk/advanced-analytics-spark-ch2](https://badges.gitter.im/yoeluk/advanced-analytics-spark-ch2.svg)](https://gitter.im/yoeluk/advanced-analytics-spark-ch2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 ### Before Running it ###
 
